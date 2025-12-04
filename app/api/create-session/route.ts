@@ -1,6 +1,7 @@
 import { WORKFLOW_ID } from "@/lib/config";
 
-export const runtime = "edge";
+// Using Node.js runtime for better compatibility with Next.js 16
+// Edge runtime can be re-enabled if needed: export const runtime = "edge";
 
 interface CreateSessionRequestBody {
   workflow?: { id?: string | null } | null;
@@ -126,8 +127,15 @@ export async function POST(request: Request): Promise<Response> {
     );
   } catch (error) {
     console.error("Create session error", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unexpected error";
+    const errorDetails =
+      error instanceof Error ? { stack: error.stack } : { error };
     return buildJsonResponse(
-      { error: "Unexpected error" },
+      {
+        error: errorMessage,
+        details: process.env.NODE_ENV !== "production" ? errorDetails : undefined,
+      },
       500,
       { "Content-Type": "application/json" },
       sessionCookie
