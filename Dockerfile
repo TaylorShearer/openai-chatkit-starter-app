@@ -12,6 +12,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ENV NEXT_PUBLIC_CHATKIT_WORKFLOW_ID=wf_6930fbf27c6481908ac79c5c20685723048d9950959b649a
+
 # Set environment variables for build time (needed if you have public env vars)
 ENV NEXT_TELEMETRY_DISABLED 1
 
