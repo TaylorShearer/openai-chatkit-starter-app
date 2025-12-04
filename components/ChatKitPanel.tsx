@@ -327,6 +327,19 @@ export function ChatKitPanel({
       // Note that Chatkit UI handles errors for your users.
       // Thus, your app code doesn't need to display errors on UI.
       console.error("ChatKit error", error);
+      // Enhanced error logging for debugging
+      if (isDev) {
+        console.error("ChatKit error details:", {
+          error,
+          errorType: error instanceof Error ? error.constructor.name : typeof error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorStack: error instanceof Error ? error.stack : undefined,
+        });
+      }
+      // Set integration error state for retryable errors
+      if (error instanceof Error && error.message.includes("stream")) {
+        setErrorState({ integration: "Streaming error occurred", retryable: true });
+      }
     },
   });
 
